@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil Professionnel</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f7fa;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* Pro Card */
+        .pro-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+            overflow: hidden;
+        }
+
+        /* Header */
+        .pro-header {
+            display: flex;
+            gap: 24px;
+            padding: 32px;
+            background: linear-gradient(135deg, #f0f8ff 0%, #e3f2fd 100%);
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .pro-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 16px;
+            object-fit: cover;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            flex-shrink: 0;
+        }
+
+        .pro-header-info {
+            flex: 1;
+        }
+
+        .pro-name {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin-bottom: 12px;
+        }
+
+        .pro-specialty {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            background: #e8f5e9;
+            color: #2e7d32;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .pro-specialty svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .pro-address {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            color: #666;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+
+        .pro-address svg {
+            width: 18px;
+            height: 18px;
+            color: #2196F3;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            background: white;
+            border-bottom: 2px solid #f0f0f0;
+            padding: 0 32px;
+        }
+
+        .tab {
+            padding: 16px 24px;
+            background: none;
+            border: none;
+            font-size: 16px;
+            font-weight: 600;
+            color: #666;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+            margin-bottom: -2px;
+        }
+
+        .tab.active {
+            color: #2196F3;
+            border-bottom-color: #2196F3;
+        }
+
+        /* Content */
+        .tab-content {
+            padding: 32px;
+        }
+
+        /* Info Sections */
+        .info-section {
+            margin-bottom: 32px;
+        }
+
+        .info-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title svg {
+            width: 22px;
+            height: 22px;
+            color: #2196F3;
+        }
+
+        /* Contact Info Grid */
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .contact-item:hover {
+            background: #e3f2fd;
+        }
+
+        .contact-icon {
+            width: 44px;
+            height: 44px;
+            background: white;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .contact-icon svg {
+            width: 20px;
+            height: 20px;
+            color: #2196F3;
+        }
+
+        .contact-details {
+            flex: 1;
+        }
+
+        .contact-label {
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .contact-value {
+            font-size: 15px;
+            color: #1a1a2e;
+            font-weight: 500;
+        }
+
+        .contact-value a {
+            color: #2196F3;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .contact-value a:hover {
+            text-decoration: underline;
+        }
+
+        /* About Section */
+        .about-text {
+            font-size: 16px;
+            color: #555;
+            line-height: 1.8;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            border-left: 4px solid #2196F3;
+        }
+
+        /* Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+        }
+
+        .stat-card {
+            padding: 20px;
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1976D2;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+            font-weight: 600;
+        }
+
+        /* Action Button */
+        .action-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #2196F3, #1976D2);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
+            margin-top: 24px;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(33, 150, 243, 0.4);
+        }
+
+        /* Services List */
+        .services-list {
+            display: grid;
+            gap: 12px;
+        }
+
+        .service-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .service-item:hover {
+            background: #e3f2fd;
+        }
+
+        .service-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .service-icon {
+            width: 40px;
+            height: 40px;
+            background: white;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .service-details h4 {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1a1a2e;
+            margin-bottom: 4px;
+        }
+
+        .service-duration {
+            font-size: 13px;
+            color: #999;
+        }
+
+        .service-price {
+            font-size: 18px;
+            font-weight: 700;
+            color: #2196F3;
+        }
+
+        /* Specializations */
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .tag {
+            padding: 8px 16px;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 20px;
+            font-size: 14px;
+            color: #555;
+            font-weight: 500;
+        }
+
+        /* Map placeholder */
+        .map-container {
+            width: 100%;
+            height: 250px;
+            background: #e0e0e0;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            font-size: 14px;
+            margin-top: 16px;
+        }
+
+        @media (max-width: 768px) {
+            .pro-header {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                padding: 24px;
+            }
+
+            .pro-avatar {
+                width: 100px;
+                height: 100px;
+            }
+
+            .tabs {
+                padding: 0 16px;
+                overflow-x: auto;
+            }
+
+            .tab-content {
+                padding: 20px;
+            }
+
+            .contact-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="pro-card">
+            <!-- Header -->
+            <div class="pro-header">
+                <img src="data:image/svg+xml,%3Csvg width='120' height='120' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='120' height='120' fill='%23e0e0e0' rx='16'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='%23999' font-size='48' font-family='Arial'%3ESR%3C/text%3E%3C/svg%3E" alt="Simon Rodrigue" class="pro-avatar">
+                <div class="pro-header-info">
+                    <h1 class="pro-name">Simon Rodrigue</h1>
+                    <div class="pro-specialty">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+                        </svg>
+                        Ostéopathe
+                    </div>
+                    <div class="pro-address">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                            <circle cx="12" cy="10" r="3"/>
+                        </svg>
+                        <span>1220 Rue Marini, Sherbrooke J1N 0L2</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabs -->
+            <div class="tabs">
+                <button class="tab">Disponibilités</button>
+                <button class="tab active">Information</button>
+            </div>
+
+            <!-- Content -->
+            <div class="tab-content">
+                <!-- Contact Info -->
+                <div class="info-section">
+                    <h2 class="section-title">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                            <polyline points="22,6 12,13 2,6"/>
+                        </svg>
+                        Coordonnées
+                    </h2>
+                    <div class="contact-grid">
+                        <div class="contact-item">
+                            <div class="contact-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                                </svg>
+                            </div>
+                            <div class="contact-details">
+                                <div class="contact-label">Téléphone</div>
+                                <div class="contact-value"><a href="tel:4385091548">438 509 1548</a></div>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <div class="contact-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                                    <polyline points="22,6 12,13 2,6"/>
+                                </svg>
+                            </div>
+                            <div class="contact-details">
+                                <div class="contact-label">Email</div>
+                                <div class="contact-value"><a href="mailto:dienglamine.shell@gmail.com">dienglamine.shell@gmail.com</a></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- About -->
+                <div class="info-section">
+                    <h2 class="section-title">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                            <circle cx="12" cy="7" r="4"/>
+                        </svg>
+                        À propos
+                    </h2>
+                    <div class="about-text">
+                        Je suis ostéopathe avec 13 années d'expérience. Passionné par mon métier, j'accompagne mes patients dans leur parcours de santé avec une approche globale et personnalisée. Mon objectif est de vous aider à retrouver votre bien-être et votre équilibre.
+                    </div>
+                </div>
+
+                <!-- Stats -->
+                <div class="info-section">
+                    <h2 class="section-title">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M18 20V10M12 20V4M6 20v-6"/>
+                        </svg>
+                        En chiffres
+                    </h2>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-value">13</div>
+                            <div class="stat-label">Années d'expérience</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">500+</div>
+                            <div class="stat-label">Patients suivis</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">4.9/5</div>
+                            <div class="stat-label">Note moyenne</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Services -->
+                <div class="info-section">
+                    <h2 class="section-title">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                            <polyline points="14 2 14 8 20 8"/>
+                            <line x1="16" y1="13" x2="8" y2="13"/>
+                            <line x1="16" y1="17" x2="8" y2="17"/>
+                            <polyline points="10 9 9 9 8 9"/>
+                        </svg>
+                        Services proposés
+                    </h2>
+                    <div class="services-list">
+                        <div class="service-item">
+                            <div class="service-info">
+                                <div class="service-icon">🩺</div>
+                                <div class="service-details">
+                                    <h4>Consultation générale</h4>
+                                    <div class="service-duration">45 min</div>
+                                </div>
+                            </div>
+                            <div class="service-price">75 $</div>
+                        </div>
+                        <div class="service-item">
+                            <div class="service-info">
+                                <div class="service-icon">🏃</div>
+                                <div class="service-details">
+                                    <h4>Consultation sportive</h4>
+                                    <div class="service-duration">60 min</div>
+                                </div>
+                            </div>
+                            <div class="service-price">90 $</div>
+                        </div>
+                        <div class="service-item">
+                            <div class="service-info">
+                                <div class="service-icon">👶</div>
+                                <div class="service-details">
+                                    <h4>Consultation pédiatrique</h4>
+                                    <div class="service-duration">30 min</div>
+                                </div>
+                            </div>
+                            <div class="service-price">60 $</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Specializations -->
+                <div class="info-section">
+                    <h2 class="section-title">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="20 6 9 17 4 12"/>
+                        </svg>
+                        Spécialisations
+                    </h2>
+                    <div class="tags">
+                        <div class="tag">Troubles musculosquelettiques</div>
+                        <div class="tag">Médecine du sport</div>
+                        <div class="tag">Ostéopathie crânienne</div>
+                        <div class="tag">Pédiatrie</div>
+                        <div class="tag">Femmes enceintes</div>
+                    </div>
+                </div>
+
+                <!-- Location -->
+                <div class="info-section">
+                    <h2 class="section-title">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                            <circle cx="12" cy="10" r="3"/>
+                        </svg>
+                        Localisation
+                    </h2>
+                    <div class="map-container">
+                        📍 Carte interactive ici
+                    </div>
+                </div>
+
+                <!-- CTA -->
+                <button class="action-btn">Prendre rendez-vous</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

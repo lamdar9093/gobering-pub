@@ -1,0 +1,32 @@
+1. Principe Fondamental : Le Slot Dynamique
+Le système doit cesser de chercher des créneaux horaires fixes (ex. toujours 30 minutes). La taille du créneau disponible doit s'adapter dynamiquement à la durée du service sélectionné par le client.
+
+Durée Totale du Slot (DTS) : Le système doit calculer une DTS en ajoutant la durée nette du service (ex. 20 min) au temps de battement/nettoyage défini par le professionnel (ex. 5 min). Si le service de Kinési dure 25 min et le battement 5 min, la DTS est de 30 minutes.
+
+2. Algorithme de Calcul des Créneaux
+Le processus de calcul des disponibilités doit s'articuler autour de cette DTS :
+
+Itération : Pour chaque plage horaire travaillée, le système doit itérer et avancer non pas par tranches de 5, 10 ou 15 minutes, mais par sa propre DTS.
+
+Exemple : Si la DTS est de 40 minutes, les heures potentielles de début seront 09:00, 09:40, 10:20, etc.
+
+Conflits : Pour chaque heure de début potentielle (HDP), le système doit vérifier qu'il n'y a aucun chevauchement avec les rendez-vous déjà pris.
+
+Le bloc de temps [HDP,HDP+DTS] doit être entièrement libre de toute réservation existante.
+
+3. Gestion de la Flexibilité et du Fallback
+Le calendrier doit être réactif aux actions de l'utilisateur :
+
+Changement de Service : Dès que le client sélectionne un nouveau service (ou change sa durée), le système doit recalculer immédiatement toutes les disponibilités en utilisant la nouvelle DTS. Cela explique pourquoi un service plus court peut révéler des créneaux auparavant indisponibles.
+
+Fallback : Si le professionnel n'a pas encore défini de services ou si aucun service n'est sélectionné, le système doit utiliser une Durée par Défaut des Rendez-vous (ex. 30 minutes) stockée dans les paramètres du professionnel. Cela assure que des créneaux cohérents sont toujours affichés.
+
+Résumé du Comportement Attendu :
+Le code doit être refactoré pour que la génération des disponibilités soit entièrement pilotée par la durée finale du service (DTS), tout en gérant les conflits avec les rendez-vous existants et en utilisant une valeur par défaut si nécessaire."
+
+
+
+
+
+
+

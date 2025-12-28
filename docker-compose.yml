@@ -1,0 +1,121 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:16-alpine
+    container_name: gobering-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-gobering}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-gobering_password}
+      POSTGRES_DB: ${POSTGRES_DB:-gobering}
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-gobering}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - gobering-network
+
+  # Gobering Application
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        VITE_STRIPE_PUBLIC_KEY: ${VITE_STRIPE_PUBLIC_KEY}
+    container_name: gobering-app
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: sh -c "npm run db:push && node dist/index.js"
+    environment:
+      # Node Environment
+      NODE_ENV: production
+      PORT: 5000
+      HOST: 0.0.0.0
+      
+      # Database Configuration
+      DATABASE_URL: postgresql://${POSTGRES_USER:-gobering}:${POSTGRES_PASSWORD:-gobering_password}@postgres:5432/${POSTGRES_DB:-gobering}
+      PGHOST: postgres
+      PGPORT: 5432
+      PGUSER: ${POSTGRES_USER:-gobering}
+      PGPASSWORD: ${POSTGRES_PASSWORD:-gobering_password}
+      PGDATABASE: ${POSTGRES_DB:-gobering}
+      
+      # Session Secret
+      SESSION_SECRET: ${SESSION_SECRET:-change-this-to-a-secure-random-string}
+      
+      # Email Configuration (Resend)
+      RESEND_API_KEY: ${RESEND_API_KEY}
+      
+      # OpenAI Configuration
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      
+      # Stripe Configuration (Subscription System)
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY}
+      VITE_STRIPE_PUBLIC_KEY: ${VITE_STRIPE_PUBLIC_KEY}
+      STRIPE_STARTER_PRICE_ID: ${STRIPE_STARTER_PRICE_ID}
+      STRIPE_PRO_PRICE_ID: ${STRIPE_PRO_PRICE_ID}
+      STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET}
+      
+      # Twilio Configuration (SMS Notifications)
+      TWILIO_ACCOUNT_SID: ${TWILIO_ACCOUNT_SID}
+      TWILIO_AUTH_TOKEN: ${TWILIO_AUTH_TOKEN}
+      TWILIO_PHONE_NUMBER: ${TWILIO_PHONE_NUMBER}
+      
+      # Application URL (for emails and links)
+      APP_URL: ${APP_URL:-http://localhost:5000}
+      
+    ports:
+      - "${APP_PORT:-5000}:5000"
+    volumes:
+      # Mount uploads directory for persistent file storage
+      - uploads:/app/public/uploads
+    networks:
+      - gobering-network
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:5000/api/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Optional: pgAdmin for database management
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: gobering-pgadmin
+    restart: unless-stopped
+    profiles:
+      - tools
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-admin@gobering.local}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-admin}
+      PGADMIN_LISTEN_PORT: 80
+    ports:
+      - "${PGADMIN_PORT:-8080}:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    networks:
+      - gobering-network
+    depends_on:
+      - postgres
+
+volumes:
+  postgres_data:
+    driver: local
+  uploads:
+    driver: local
+  pgadmin_data:
+    driver: local
+
+networks:
+  gobering-network:
+    driver: bridge

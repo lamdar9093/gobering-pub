@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nouveau rendez-vous - Gobering</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f7fa;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+            padding: 16px 20px;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .close-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .close-btn:active {
+            transform: scale(0.95);
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* View Toggle */
+        .view-toggle {
+            background: white;
+            padding: 12px;
+            display: flex;
+            gap: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .toggle-btn {
+            flex: 1;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            background: white;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .toggle-btn.active {
+            background: #2196F3;
+            color: white;
+            border-color: #2196F3;
+        }
+
+        .toggle-btn svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* Content */
+        .content {
+            padding: 20px;
+        }
+
+        /* Vertical View */
+        .vertical-view {
+            display: block;
+        }
+
+        .horizontal-view {
+            display: none;
+        }
+
+        .section {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-title svg {
+            width: 20px;
+            height: 20px;
+            color: #2196F3;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .required {
+            color: #ff5252;
+            margin-left: 4px;
+        }
+
+        .input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .input:focus {
+            outline: none;
+            border-color: #2196F3;
+            box-shadow: 0 0 0 4px rgba(33, 150, 243, 0.1);
+        }
+
+        .input-icon {
+            position: relative;
+        }
+
+        .input-icon svg {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
+            color: #999;
+            pointer-events: none;
+        }
+
+        .input-icon input {
+            padding-left: 48px;
+        }
+
+        .datetime-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .time-inputs {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .time-input {
+            flex: 1;
+            text-align: center;
+        }
+
+        .time-separator {
+            font-size: 20px;
+            font-weight: 600;
+            color: #999;
+        }
+
+        /* Horizontal Timeline View */
+        .timeline-container {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .date-selector {
+            margin-bottom: 20px;
+        }
+
+        .date-display {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            margin-bottom: 12px;
+        }
+
+        .date-display svg {
+            width: 20px;
+            height: 20px;
+            color: #2196F3;
+        }
+
+        .date-text {
+            font-size: 16px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .calendar-icon {
+            width: 40px;
+            height: 40px;
+            background: white;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .timeline-scroll {
+            overflow-x: auto;
+            margin: 0 -20px;
+            padding: 0 20px 10px;
+        }
+
+        .timeline {
+            display: flex;
+            gap: 12px;
+            min-width: max-content;
+            padding-bottom: 10px;
+        }
+
+        .time-slot {
+            min-width: 100px;
+            padding: 16px 20px;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .time-slot:active {
+            transform: scale(0.95);
+        }
+
+        .time-slot.selected {
+            background: #2196F3;
+            border-color: #2196F3;
+            color: white;
+        }
+
+        .time-slot.unavailable {
+            background: #f5f5f5;
+            border-color: #e0e0e0;
+            color: #999;
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        .slot-time {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .slot-label {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        .selected-info {
+            background: #e3f2fd;
+            padding: 16px;
+            border-radius: 12px;
+            margin-top: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .selected-info svg {
+            width: 24px;
+            height: 24px;
+            color: #2196F3;
+        }
+
+        .selected-text {
+            flex: 1;
+        }
+
+        .selected-label {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 2px;
+        }
+
+        .selected-value {
+            font-size: 16px;
+            font-weight: 600;
+            color: #2196F3;
+        }
+
+        /* Professional Card */
+        .professional-card {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            margin-bottom: 16px;
+        }
+
+        .professional-avatar {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #2196F3, #1976D2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .professional-info h3 {
+            font-size: 16px;
+            color: #2c3e50;
+            margin-bottom: 2px;
+        }
+
+        .professional-info p {
+            font-size: 13px;
+            color: #666;
+        }
+
+        /* Submit Button */
+        .submit-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #2196F3, #1976D2);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .submit-btn:active {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(33, 150, 243, 0.4);
+        }
+
+        /* Scrollbar styling */
+        .timeline-scroll::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .timeline-scroll::-webkit-scrollbar-track {
+            background: #f0f0f0;
+            border-radius: 3px;
+        }
+
+        .timeline-scroll::-webkit-scrollbar-thumb {
+            background: #2196F3;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Nouveau rendez-vous</h1>
+        <button class="close-btn">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                <path d="M18 6L6 18M6 6l12 12"/>
+            </svg>
+        </button>
+    </div>
+
+    <div class="view-toggle">
+        <button class="toggle-btn active" id="verticalBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="7" height="7" rx="1"/>
+                <rect x="3" y="14" width="7" height="7" rx="1"/>
+                <rect x="14" y="3" width="7" height="7" rx="1"/>
+                <rect x="14" y="14" width="7" height="7" rx="1"/>
+            </svg>
+            Vue classique
+        </button>
+        <button class="toggle-btn" id="horizontalBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="4" width="18" height="18" rx="2"/>
+                <path d="M16 2v4M8 2v4M3 10h18"/>
+            </svg>
+            Vue timeline
+        </button>
+    </div>
+
+    <div class="content">
+        <!-- Vue Verticale (Classique) -->
+        <div class="vertical-view" id="verticalView">
+            <div class="professional-card">
+                <div class="professional-avatar">SR</div>
+                <div class="professional-info">
+                    <h3>Simon Rodrigue</h3>
+                    <p>Ostéopathe</p>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-title">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="4" width="18" height="18" rx="2"/>
+                        <path d="M16 2v4M8 2v4M3 10h18"/>
+                    </svg>
+                    Date et heure
+                </div>
+
+                <div class="form-group">
+                    <label class="label">Date de début<span class="required">*</span></label>
+                    <input type="date" class="input" value="2025-10-21">
+                </div>
+
+                <div class="form-group">
+                    <label class="label">Heure de début<span class="required">*</span></label>
+                    <div class="time-inputs">
+                        <input type="number" class="input time-input" value="09" min="0" max="23">
+                        <span class="time-separator">:</span>
+                        <input type="number" class="input time-input" value="00" min="0" max="59">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="label">Heure de fin<span class="required">*</span></label>
+                    <div class="time-inputs">
+                        <input type="number" class="input time-input" value="10" min="0" max="23">
+                        <span class="time-separator">:</span>
+                        <input type="number" class="input time-input" value="00" min="0" max="59">
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-title">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                        <circle cx="12" cy="7" r="4"/>
+                    </svg>
+                    Informations client
+                </div>
+
+                <div class="form-group">
+                    <label class="label">Prénom<span class="required">*</span></label>
+                    <div class="input-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                            <circle cx="12" cy="7" r="4"/>
+                        </svg>
+                        <input type="text" class="input" placeholder="Jean">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="label">Nom<span class="required">*</span></label>
+                    <div class="input-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                            <circle cx="12" cy="7" r="4"/>
+                        </svg>
+                        <input type="text" class="input" placeholder="Dupont">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="label">Courriel</label>
+                    <div class="input-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                            <path d="M22 6l-10 7L2 6"/>
+                        </svg>
+                        <input type="email" class="input" placeholder="jean.dupont@email.com">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="label">Téléphone</label>
+                    <div class="input-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                        </svg>
+                        <input type="tel" class="input" placeholder="+33 6 12 34 56 78">
+                    </div>
+                </div>
+            </div>
+
+            <button class="submit-btn">Confirmer le rendez-vous</button>
+        </div>
+
+        <!-- Vue Horizontale (Timeline) -->
+        <div class="horizontal-view" id="horizontalView">
+            <div class="professional-card">
+                <div class="professional-avatar">SR</div>
+                <div class="professional-info">
+                    <h3>Simon Rodrigue</h3>
+                    <p>Ostéopathe</p>
+                </div>
+            </div>
+
+            <div class="timeline-container">
+                <div class="section-title">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="4" width="18" height="18" rx="2"/>
+                        <path d="M16 2v4M8 2v4M3 10h18"/>
+                    </svg>
+                    Choisir un créneau
+                </div>
+
+                <div class="date-selector">
+                    <div class="date-display">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="4" width="18" height="18" rx="2"/>
+                            <path d="M16 2v4M8 2v4M3 10h18"/>
+                        </svg>
+                        <span class="date-text">28 octobre 2025</span>
+                        <div class="calendar-icon">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-scroll">
+                    <div class="timeline">
+                        <div class="time-slot unavailable">
+                            <div class="slot-time">08:00</div>
+                            <div class="slot-label">Indisponible</div>
+                        </div>
+                        <div class="time-slot unavailable">
+                            <div class="slot-time">09:00</div>
+                            <div class="slot-label">Indisponible</div>
+                        </div>
+                        <div class="time-slot">
+                            <div class="slot-time">10:00</div>
+                            <div class="slot-label">Disponible</div>
+                        </div>
+                        <div class="time-slot selected">
+                            <div class="slot-time">10:40</div>
+                            <div class="slot-label">Sélectionné</div>
+                        </div>
+                        <div class="time-slot">
+                            <div class="slot-time">11:20</div>
+                            <div class="slot-label">Disponible</div>
+                        </div>
+                        <div class="time-slot">
+                            <div class="slot-time">13:00</div>
+                            <div class="slot-label">Disponible</div>
+                        </div>
+                        <div class="time-slot">
+                            <div class="slot-time">14:00</div>
+                            <div class="slot-label">Disponible</div>
+                        </div>
+                        <div class="time-slot">
+                            <div class="slot-time">15:00</div>
+                            <div class="slot-label">Disponible</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="selected-info">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <div class="selected-text">
+                        <div class="selected-label">Rendez-vous sélectionné</div>
+                        <div class="selected-value">28 octobre 2025 à 10:40</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-title">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                        <circle cx="12" cy="7" r="4"/>
+                    </svg>
+                    Informations client
+                </div>
+
+                <div class="form-group">
+                    <label class="label">Prénom<span class="required">*</span></label>
+                    <div class="input-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                            <circle cx="12" cy="7" r="4"/>
+                        </svg>
+                        <input type="text" class="input" placeholder="Jean" value="Jean">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="label">Nom<span class="required">*</span></label>
+                    <div class="input-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                            <circle cx="12" cy="7" r="4"/>
+                        </svg>
+                        <input type="text" class="input" placeholder="Dupont" value="Dupont">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="label">Courriel</label>
+                    <div class="input-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                            <path d="M22 6l-10 7L2 6"/>
+                        </svg>
+                        <input type="email" class="input" placeholder="jean.dupont@email.com">
+                    </div>
+                </div>
+            </div>
+
+            <button class="submit-btn">Confirmer le rendez-vous</button>
+        </div>
+    </div>
+
+    <script>
+        const verticalBtn = document.getElementById('verticalBtn');
+        const horizontalBtn = document.getElementById('horizontalBtn');
+        const verticalView = document.getElementById('verticalView');
+        const horizontalView = document.getElementById('horizontalView');
+
+        verticalBtn.addEventListener('click', () => {
+            verticalBtn.classList.add('active');
+            horizontalBtn.classList.remove('active');
+            verticalView.style.display = 'block';
+            horizontalView.style.display = 'none';
+        });
+
+        horizontalBtn.addEventListener('click', () => {
+            horizontalBtn.classList.add('active');
+            verticalBtn.classList.remove('active');
+            horizontalView.style.display = 'block';
+            verticalView.style.display = 'none';
+        });
+
+        // Gestion des créneaux horaires
+        const timeSlots = document.querySelectorAll('.time-slot:not(.unavailable)');
+        timeSlots.forEach(slot => {
+            slot.addEventListener('click', () => {
+                timeSlots.forEach(s => s.classList.remove('selected'));
+                slot.classList.add('selected');
+            });
+        });
+    </script>
+</body>
+</html>

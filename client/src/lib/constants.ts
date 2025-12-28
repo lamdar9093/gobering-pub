@@ -1,0 +1,43 @@
+// Liste des professions de santé courantes au Québec
+export const HEALTH_PROFESSIONS = [
+  "Acupuncteur(trice)",
+  "Chiropraticien(ne)",
+  "Dentiste",
+  "Ergothérapeute",
+  "Hygiéniste dentaire",
+  "Infirmier(ère)",
+  "Kinésiologue",
+  "Massothérapeute",
+  "Médecin généraliste",
+  "Médecin spécialiste",
+  "Naturopathe",
+  "Nutritionniste / Diététiste",
+  "Optométriste",
+  "Orthophoniste",
+  "Ostéopathe",
+  "Pharmacien(ne)",
+  "Physiothérapeute",
+  "Podiatre",
+  "Professionnel conjugal(e) et familial(e)",
+  "Psychologue",
+  "Sage-femme",
+  "Travailleur(euse) social(e)",
+  "Autre",
+];
+
+// Liste des provinces canadiennes
+export const CANADIAN_PROVINCES = [
+  "Alberta",
+  "Colombie-Britannique",
+  "Île-du-Prince-Édouard",
+  "Manitoba",
+  "Nouveau-Brunswick",
+  "Nouvelle-Écosse",
+  "Ontario",
+  "Québec",
+  "Saskatchewan",
+  "Terre-Neuve-et-Labrador",
+  "Territoires du Nord-Ouest",
+  "Nunavut",
+  "Yukon",
+];
