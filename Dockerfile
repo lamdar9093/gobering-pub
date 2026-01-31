@@ -1,4 +1,5 @@
 # Multi-stage build for Gobering application
+# Optimized for VPS deployment with PostgreSQL container
 
 # Stage 1: Build
 FROM node:20-alpine AS builder
@@ -14,7 +15,7 @@ RUN npm ci
 # Copy source code
 COPY . .
 
-# Accept build argument for Vite environment variables
+# Accept build arguments for Vite environment variables
 ARG VITE_STRIPE_PUBLIC_KEY
 ENV VITE_STRIPE_PUBLIC_KEY=$VITE_STRIPE_PUBLIC_KEY
 
@@ -22,11 +23,11 @@ ENV VITE_STRIPE_PUBLIC_KEY=$VITE_STRIPE_PUBLIC_KEY
 ENV NODE_ENV=production
 RUN npm run build
 
-# Stage 2: Production dependencies (including drizzle-kit for migrations)
+# Stage 2: Production dependencies
 FROM node:20-alpine AS deps
 WORKDIR /app
 
-# Install dependencies for native modules
+# Install dependencies for native modules (sharp, bcrypt, etc.)
 RUN apk add --no-cache libc6-compat python3 make g++
 
 # Copy package files
@@ -34,14 +35,14 @@ COPY package.json package-lock.json* ./
 
 # Install production dependencies + drizzle-kit for migrations
 RUN npm ci --only=production && \
-    npm install drizzle-kit && \
+    npm install drizzle-kit tsx && \
     npm cache clean --force
 
 # Stage 3: Production
 FROM node:20-alpine AS runner
 WORKDIR /app
 
-# Install runtime dependencies only
+# Install runtime dependencies
 RUN apk add --no-cache libc6-compat
 
 # Create non-root user for security
@@ -62,13 +63,15 @@ COPY --from=deps --chown=gobering:nodejs /app/node_modules ./node_modules
 # Copy runtime dependencies
 COPY --from=builder --chown=gobering:nodejs /app/shared ./shared
 COPY --from=builder --chown=gobering:nodejs /app/server ./server
+
+# Copy drizzle migrations if they exist
 COPY --from=builder --chown=gobering:nodejs /app/drizzle ./drizzle
 
-# Copy public assets (profile pictures, etc.) and create uploads directory
+# Copy public assets and create uploads directory with proper permissions
 COPY --from=builder --chown=gobering:nodejs /app/public ./public
 RUN mkdir -p ./public/uploads && chown -R gobering:nodejs ./public
 
-# Set environment variables
+# Set environment variables (values provided at runtime via docker-compose)
 ENV NODE_ENV=production
 ENV PORT=5000
 ENV HOST=0.0.0.0

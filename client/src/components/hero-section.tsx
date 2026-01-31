@@ -29,7 +29,7 @@ export default function HeroSection() {
       </div>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto relative z-10 flex items-center justify-center min-h-[inherit]">
+      <div className="max-w-7xl mx-auto relative z-10 flex items-center justify-center min-h-[inherit] pt-16 sm:pt-12 md:pt-0">
         <div className="max-w-4xl w-full text-center">
           <h2 className="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-3 sm:mb-4 leading-tight" data-testid="hero-title">
             Simplifiez la gestion de vos rendez-vous

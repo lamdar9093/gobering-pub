@@ -8,15 +8,16 @@ services:
     restart: unless-stopped
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-gobering}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-gobering_password}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB:-gobering}
       PGDATA: /var/lib/postgresql/data/pgdata
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./backups:/backups
     ports:
       - "${POSTGRES_PORT:-5432}:5432"
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-gobering}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-gobering} -d ${POSTGRES_DB:-gobering}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -43,15 +44,15 @@ services:
       HOST: 0.0.0.0
       
       # Database Configuration
-      DATABASE_URL: postgresql://${POSTGRES_USER:-gobering}:${POSTGRES_PASSWORD:-gobering_password}@postgres:5432/${POSTGRES_DB:-gobering}
+      DATABASE_URL: postgresql://${POSTGRES_USER:-gobering}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-gobering}
       PGHOST: postgres
       PGPORT: 5432
       PGUSER: ${POSTGRES_USER:-gobering}
-      PGPASSWORD: ${POSTGRES_PASSWORD:-gobering_password}
+      PGPASSWORD: ${POSTGRES_PASSWORD}
       PGDATABASE: ${POSTGRES_DB:-gobering}
       
       # Session Secret
-      SESSION_SECRET: ${SESSION_SECRET:-change-this-to-a-secure-random-string}
+      SESSION_SECRET: ${SESSION_SECRET}
       
       # Email Configuration (Resend)
       RESEND_API_KEY: ${RESEND_API_KEY}
@@ -59,25 +60,27 @@ services:
       # OpenAI Configuration
       OPENAI_API_KEY: ${OPENAI_API_KEY}
       
-      # Stripe Configuration (Subscription System)
+      # Stripe Configuration
       STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY}
       VITE_STRIPE_PUBLIC_KEY: ${VITE_STRIPE_PUBLIC_KEY}
-      STRIPE_STARTER_PRICE_ID: ${STRIPE_STARTER_PRICE_ID}
       STRIPE_PRO_PRICE_ID: ${STRIPE_PRO_PRICE_ID}
+      STRIPE_ADDITIONAL_SEAT_PRICE_ID: ${STRIPE_ADDITIONAL_SEAT_PRICE_ID}
       STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET}
       
-      # Twilio Configuration (SMS Notifications)
+      # Twilio Configuration (SMS)
       TWILIO_ACCOUNT_SID: ${TWILIO_ACCOUNT_SID}
       TWILIO_AUTH_TOKEN: ${TWILIO_AUTH_TOKEN}
       TWILIO_PHONE_NUMBER: ${TWILIO_PHONE_NUMBER}
       
-      # Application URL (for emails and links)
-      APP_URL: ${APP_URL:-http://localhost:5000}
+      # Operations
+      OPERATIONS_EMAIL: ${OPERATIONS_EMAIL}
+      
+      # Application URL
+      APP_URL: ${APP_URL:-https://gobering.com}
       
     ports:
       - "${APP_PORT:-5000}:5000"
     volumes:
-      # Mount uploads directory for persistent file storage
       - uploads:/app/public/uploads
     networks:
       - gobering-network
