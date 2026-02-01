@@ -5,6 +5,7 @@ import { setupVite, serveStatic, log } from "./vite";
 import connectPgSimple from "connect-pg-simple";
 import pg from "pg";
 import { initializeCronJobs } from "./cron";
+import { syncLamdaaAccounts } from "./config/sync-lamdaa";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 
@@ -273,6 +274,11 @@ app.use((req, res, next) => {
 
   // Initialize cron jobs for trial reminders
   initializeCronJobs();
+
+  // Sync LAMDAA accounts (permanent free Pro access)
+  syncLamdaaAccounts().catch(err => {
+    console.error("[LAMDAA] Failed to sync LAMDAA accounts:", err);
+  });
 
   // ALWAYS serve the app on the port specified in the environment variable PORT
   // Other ports are firewalled. Default to 5000 if not specified.

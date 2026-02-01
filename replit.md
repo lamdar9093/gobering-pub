@@ -120,10 +120,15 @@ Preferred communication style: Simple, everyday language.
 -   **Special LAMDAA Accounts** (Permanent Pro Access):
     -   **Configuration**: isLamdaaAccount=true (users table), planType='pro', subscriptionStatus='active', subscriptionEndsAt=null
     -   **Protection**: Cron jobs skip LAMDAA accounts to prevent automatic downgrades
+    -   **Management** (February 2026): Centralized email-based configuration
+        -   **Config File**: `server/config/lamdaa-accounts.ts` - Single source of truth for LAMDAA emails
+        -   **Auto-Sync**: `syncLamdaaAccounts()` runs at server startup to sync database with config
+        -   **Auto-Register**: New registrations with LAMDAA emails are automatically marked
+        -   **How to Add/Remove**: Edit `LAMDAA_EMAILS` array in config file, restart server
     -   **Current LAMDAA Accounts**:
-        -   Lamda Lamda Clinique (leuz20028@yahoo.fr) - Admin, with members:
-            -   sodasarrdieng@gmail.com (Professionnel)
-            -   jamonoji@gmail.com (Secrétaire)
+        -   leuz20028@yahoo.fr (Lamda Lamda - Admin)
+        -   sodasarrdieng@gmail.com (Soda Sarr - Professionnel)
+        -   simrodrigue@outlook.com (Simon Rodrigue)
 
 # External Dependencies
 

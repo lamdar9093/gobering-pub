@@ -22,6 +22,7 @@ import { fr } from "date-fns/locale";
 import OpenAI from "openai";
 import Stripe from "stripe";
 import { runTrialRemindersManually } from "./cron";
+import { isLamdaaEmail } from "./config/lamdaa-accounts";
 
 // Middleware to check if user is authenticated
 function requireAuth(req: any, res: any, next: any) {
@@ -1508,6 +1509,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Stocker le plan choisi pour référence après l'essai
       const selectedPlan = planType === 'pro' ? 'pro' : 'free';
 
+      // Check if this email is a LAMDAA account (permanent free Pro access)
+      const isLamdaa = isLamdaaEmail(email);
+
       // Generate verification token (cryptographically secure random bytes)
       const verificationToken = crypto.randomBytes(32).toString('hex');
       
@@ -1535,6 +1539,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           verificationToken: hashedToken,
           verificationTokenExpiresAt: tokenExpiresAt,
           verificationMethod: null, // Will be set to 'email' after verification
+          isLamdaaAccount: isLamdaa, // LAMDAA accounts get permanent free Pro access
         }).returning();
 
         // Create a personal clinic for the new professional
@@ -1549,6 +1554,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }).returning();
 
         // Create professional profile linked to user with PRO trial for everyone
+        // LAMDAA accounts get permanent Pro access without trial
         const [professional] = await tx.insert(professionals).values({
           userId: user.id,
           firstName,
@@ -1564,10 +1570,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
           description: description || null,
           clinicId: clinic.id, // Assign the professional to their clinic
           isActive: true, // Mark as active immediately so they appear in "Membres actifs"
-          planType: 'pro', // Tous obtiennent PRO pendant l'essai
-          subscriptionStatus: 'trial',
-          intendedPlan: selectedPlan, // Stocker le plan choisi pour après l'essai
-          trialEndsAt,
+          planType: 'pro', // LAMDAA et trial: tous Pro
+          subscriptionStatus: isLamdaa ? 'active' : 'trial', // LAMDAA: permanent active
+          intendedPlan: isLamdaa ? 'pro' : selectedPlan, // LAMDAA: always Pro
+          trialEndsAt: isLamdaa ? null : trialEndsAt, // LAMDAA: no expiration
         }).returning();
 
         // Add the professional as an Admin member of their clinic
